@@ -1,0 +1,20 @@
+{
+  "name": "urlparser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "author": "kokoc",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.0",
+    "ejs": "^2.4.1",
+    "express": "^4.13.4",
+    "express-validator": "^2.20.3",
+    "mongoose": "^4.4.10",
+    "validator": "^5.1.0"
+  }
+}
