@@ -29,7 +29,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.get("/", function(req, res) {
     console.log(req.headers);
 
-    res.send("this is the root route");
+    res.send("Pass a valid url as a parametr and be rewarded with a short link:D");
 });
 
 app.get("/short/:url", function(req, res) {
