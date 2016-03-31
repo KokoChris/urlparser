@@ -22,7 +22,7 @@ var linkSchema = new mongoose.Schema({
 
 var Link = mongoose.model("Link", linkSchema);
 
-mongoose.connect("mongodb://localhost/linkparadise");
+mongoose.connect(process.env.DATABASEURL);
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
