@@ -4,44 +4,72 @@ var express = require('express'),
 	expressValidator = require('express-validator'),
 	validator = require("validator"),
     bodyParser = require("body-parser"),
+    shortid = require("shortid"),
     mongoose = require("mongoose");
 
 var linkSchema = new mongoose.Schema({
-	link:String,
-	shortLink:String
+	link:{
+
+		  type:String,
+		  unique:true,
+		},
+	_id: {
+	    type: String,
+	    unique: true,
+	    'default': shortid.generate
+	}	
 });
 
 var Link = mongoose.model("Link",linkSchema);
 
 mongoose.connect("mongodb://localhost/linkparadise");
-
 app.use(bodyParser.urlencoded({extended: true}));
 
 
-
 app.get("/",function(req,res){
+        console.log(req.headers);
 
 	res.send("this is the root route");
 });
 
-app.get("/new",function(req,res){
-	res.send("this is the new thing");
-})
+app.get("/short/:url",function(req,res){
+	
+	Link.find({_id :req.params.url.toString()},function(err,foundLink) {
+        
+		if(err){
+			console.log(err);
+		}else{
+			
+			if(foundLink.length !== 0){
+				res.redirect(foundLink[0].link)
+			}
+			else{
+
+				res.redirect("/");
+			}
+		}	
+	});
+});	
 
 app.get("/*",function (req,res) {
-    
-	if(validator.isURL(req.params["0"])){
-		var newLink = {link: req.params["0"], shortLink: "testing"};
-		Link.create(newLink,function(err, link){
-			if(err){
-				console.log(err);
-			}else{
-				res.send(req.params);
-			}
-		});	
+	var hostIp = req.headers.host;
+	if(validator.isURL(req.params["0"]) && req.params["0"] !== "favicon.ico"){
+	    
+			var newLink = {link: req.params["0"]};
+			Link.create(newLink,function(err, link){
+				if(err){
+					res.redirect("/");
+				}else{
+					res.json({
+						"original-url": link.link,
+						"short-url": hostIp + "/short/" +link["_id"]
+					});
+				}
+			});	
+
 		
 	}else{
-		res.status(400).redirect("/new");
+		res.status(400).send("Invalid link,please try again")
 	}
 });
 
